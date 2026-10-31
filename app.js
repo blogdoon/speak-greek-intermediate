@@ -668,7 +668,10 @@ function goalCard() {
   const count = todayCount(progress, today);
   const streak = currentStreak(progress, today);
   const card = h("div", { className: "goal-card" });
-  const bar = h("progress", { max: DAILY_GOAL, value: Math.min(count, DAILY_GOAL) });
+  const bar = h("progress", {
+    max: DAILY_GOAL,
+    value: Math.min(count, DAILY_GOAL),
+  });
   bar.setAttribute("aria-label", "Daily goal");
   card.append(
     h("span", {
