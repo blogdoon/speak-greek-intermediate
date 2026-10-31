@@ -1,25 +1,25 @@
 # Πού έν η εκκλησιά του Αγίου Λαζάρου; — Where Is the Church of Saint Lazarus?
 
-| | Κυπριακά | English |
-| --- | --- | --- |
-| Νίκος | Συγγνώμη, μπορείτε να με βοηθήσετε; | Excuse me, can you help me? |
-| Κύριος Κυριάκος | Ναι γιε μου, ίντα θέλεις; | Yes, my son, what do you need? |
-| Νίκος | Γυρεύκω την εκκλησιά του Αγίου Λαζάρου. Εχάθηκα. | I'm looking for the Church of Saint Lazarus. I'm lost. |
-| Κύριος Κυριάκος | Α, εν μακριά. Δέκα λεπτά με τα πόδια. | Ah, it's not far. Ten minutes on foot. |
-| Νίκος | Ποιον δρόμο να πάρω; | Which way should I go? |
-| Κύριος Κυριάκος | Θωρείς τζείνο το φανάρι ποδά; | See that traffic light over there? |
-| Νίκος | Ναι, θωρώ το. | Yes, I see it. |
+|                 | Κυπριακά                                                                                                                                         | English                                                                                                                        |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| Νίκος           | Συγγνώμη, μπορείτε να με βοηθήσετε;                                                                                                              | Excuse me, can you help me?                                                                                                    |
+| Κύριος Κυριάκος | Ναι γιε μου, ίντα θέλεις;                                                                                                                        | Yes, my son, what do you need?                                                                                                 |
+| Νίκος           | Γυρεύκω την εκκλησιά του Αγίου Λαζάρου. Εχάθηκα.                                                                                                 | I'm looking for the Church of Saint Lazarus. I'm lost.                                                                         |
+| Κύριος Κυριάκος | Α, εν μακριά. Δέκα λεπτά με τα πόδια.                                                                                                            | Ah, it's not far. Ten minutes on foot.                                                                                         |
+| Νίκος           | Ποιον δρόμο να πάρω;                                                                                                                             | Which way should I go?                                                                                                         |
+| Κύριος Κυριάκος | Θωρείς τζείνο το φανάρι ποδά;                                                                                                                    | See that traffic light over there?                                                                                             |
+| Νίκος           | Ναι, θωρώ το.                                                                                                                                    | Yes, I see it.                                                                                                                 |
 | Κύριος Κυριάκος | Πάεις ίσια ως το φανάρι τζιαι στρίβεις αριστερά. Μετά πάεις ίσια, περνάς ένα φούρνο τζιαι ένα περίπτερο, τζιαι στο δεύτερο στενό στρίβεις δεξιά. | Go straight to the light and turn left. Then go straight, pass a bakery and a kiosk, and turn right at the second side street. |
-| Νίκος | Μιλάτε νάκκον πκιο σιγά, παρακαλώ; | Could you speak a bit more slowly, please? |
-| Κύριος Κυριάκος | Συγγνώμη! Λοιπόν. Φανάρι, αριστερά. Ίσια. Δεύτερο στενό, δεξιά. Τζιαι εννά δεις την εκκλησιά μπροστά σου, μιάλη, πέτρινη. | Sorry! So. Light, left. Straight. Second street, right. And you'll see the church in front of you, big, made of stone. |
-| Νίκος | Τωρά εκατάλαβα. Φανάρι αριστερά, δεύτερο στενό δεξιά. | Now I get it. Light left, second street right. |
-| Κύριος Κυριάκος | Μπράβο σου. | Well done. |
-| Νίκος | Έσιει πουθενά να πιω καφέ κοντά; | Is there anywhere nearby to get a coffee? |
-| Κύριος Κυριάκος | Έσιει ένα καφενείο πίσω που την εκκλησιά. Να πεις ότι σε έστειλεν ο Κυριάκος, εννά σε προσέξουν. | There's a coffee shop behind the church. Say Kyriakos sent you, they'll look after you. |
-| Νίκος | Χαχα, ευχαριστώ πολλά! | Haha, thanks a lot! |
-| Κύριος Κυριάκος | Τίποτε. Μιλάς καλά ελληνικά! Πόσον καιρό είσαι στην Κύπρο; | You're welcome. You speak good Greek! How long have you been in Cyprus? |
-| Νίκος | Τρία χρόνια. | Three years. |
-| Κύριος Κυριάκος | Τζιαι μιλάς τζιαι κυπριακά! | And you speak Cypriot too! |
-| Νίκος | Νάκκον-νάκκον. Μαθαίνω που τους γειτόνους μου. | Little by little. I'm learning from my neighbours. |
-| Κύριος Κυριάκος | Τζείνοι εν οι καλύτεροι δασκάλοι. Άτε, στο καλό! | They're the best teachers. Off you go, take care! |
-| Νίκος | Γεια σας, να 'στε καλά! | Goodbye, thank you! |
+| Νίκος           | Μιλάτε νάκκον πκιο σιγά, παρακαλώ;                                                                                                               | Could you speak a bit more slowly, please?                                                                                     |
+| Κύριος Κυριάκος | Συγγνώμη! Λοιπόν. Φανάρι, αριστερά. Ίσια. Δεύτερο στενό, δεξιά. Τζιαι εννά δεις την εκκλησιά μπροστά σου, μιάλη, πέτρινη.                        | Sorry! So. Light, left. Straight. Second street, right. And you'll see the church in front of you, big, made of stone.         |
+| Νίκος           | Τωρά εκατάλαβα. Φανάρι αριστερά, δεύτερο στενό δεξιά.                                                                                            | Now I get it. Light left, second street right.                                                                                 |
+| Κύριος Κυριάκος | Μπράβο σου.                                                                                                                                      | Well done.                                                                                                                     |
+| Νίκος           | Έσιει πουθενά να πιω καφέ κοντά;                                                                                                                 | Is there anywhere nearby to get a coffee?                                                                                      |
+| Κύριος Κυριάκος | Έσιει ένα καφενείο πίσω που την εκκλησιά. Να πεις ότι σε έστειλεν ο Κυριάκος, εννά σε προσέξουν.                                                 | There's a coffee shop behind the church. Say Kyriakos sent you, they'll look after you.                                        |
+| Νίκος           | Χαχα, ευχαριστώ πολλά!                                                                                                                           | Haha, thanks a lot!                                                                                                            |
+| Κύριος Κυριάκος | Τίποτε. Μιλάς καλά ελληνικά! Πόσον καιρό είσαι στην Κύπρο;                                                                                       | You're welcome. You speak good Greek! How long have you been in Cyprus?                                                        |
+| Νίκος           | Τρία χρόνια.                                                                                                                                     | Three years.                                                                                                                   |
+| Κύριος Κυριάκος | Τζιαι μιλάς τζιαι κυπριακά!                                                                                                                      | And you speak Cypriot too!                                                                                                     |
+| Νίκος           | Νάκκον-νάκκον. Μαθαίνω που τους γειτόνους μου.                                                                                                   | Little by little. I'm learning from my neighbours.                                                                             |
+| Κύριος Κυριάκος | Τζείνοι εν οι καλύτεροι δασκάλοι. Άτε, στο καλό!                                                                                                 | They're the best teachers. Off you go, take care!                                                                              |
+| Νίκος           | Γεια σας, να 'στε καλά!                                                                                                                          | Goodbye, thank you!                                                                                                            |

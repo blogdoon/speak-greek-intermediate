@@ -1,28 +1,28 @@
 # Ίντα κάμνουμεν το Σαββατοκύριακο; — What Are We Doing This Weekend?
 
-| | Κυπριακά | English |
-| --- | --- | --- |
-| Γιώργος | Έλα ρε Νίκο, ίντα κάμνεις; | Hey Nicos, how's it going? |
-| Νίκος | Γεια σου Γιώργο! Εδώ, ξεκουράζουμαι. Εσού; | Hi Giorgos! Just resting here. You? |
-| Γιώργος | Άκου. Το Σάββατο θέλουμεν να πάμεν Τρόοδος με την Ελένη τζιαι τη Χρυστάλλα. Έρκεσαι; | Listen. On Saturday we want to go to Troodos with Eleni and Chrystalla. Are you coming? |
-| Νίκος | Τρόοδος; Ίντα έσιει να κάμουμεν τζιαμαί; | Troodos? What is there to do there? |
-| Γιώργος | Σκέφτουμαστεν να κάμουμεν το μονοπάτι ως τον καταρράκτη των Καληδονίων, τζιαι μετά να φάμεν στις Πλάτρες. | We're thinking of doing the trail to the Caledonia waterfall, and then eating in Platres. |
-| Νίκος | Ακούεται ωραίο. Αμμά εν δύσκολο το μονοπάτι; | Sounds nice. But is the trail hard? |
-| Γιώργος | Όι, μια ώρα περίπου. Μόνο να φορέσεις καλά παπούτσια. | No, about an hour. Just wear good shoes. |
-| Νίκος | Τζιαι η Χρυστάλλα εν ήθελε θάλασσα; | And didn't Chrystalla want the sea? |
-| Γιώργος | Ήθελε Κάβο Γκρέκο, αμμά της είπαμεν ότι το βουνό εν πκιο δροσερό τώρα. Εσυμφώνησε τελικά. | She wanted Cape Greco, but we told her the mountains are cooler now. She agreed in the end. |
-| Νίκος | Ε καλά. Τζιαι αν βρέξει; | Fair enough. And if it rains? |
-| Γιώργος | Εν να βρέξει, είδα τον καιρό. Αν βρέξει, κάθουμαστεν σε ένα καφενείο τζιαι πίνουμεν ζιβανία! | It won't rain, I checked the weather. If it rains, we sit in a coffee shop and drink zivania! |
-| Νίκος | Χαχα, εν κακή ιδέα ούτε τούτη. Ίντα ώρα ξεκινούμεν; | Haha, that's not a bad idea either. What time do we leave? |
-| Γιώργος | Στες οχτώ το πρωί. Εν θέλουμεν να πιάσουμεν ζέστη στο μονοπάτι. | At eight in the morning. We don't want to get caught in the heat on the trail. |
-| Νίκος | Οχτώ; Το Σάββατο; Ρε Γιώργο... | Eight? On a Saturday? Come on, Giorgos... |
-| Γιώργος | Άτε, εν να πεθάνεις! Εννά περάσω να σε πάρω με το αυτοκίνητο μου. | Come on, you won't die! I'll come by and pick you up in my car. |
-| Νίκος | Ντάξει, ντάξει. Ίντα να φέρω; | OK, OK. What should I bring? |
-| Γιώργος | Νερό, καπέλο, τζιαι ένα ζακέττο. Πάνω στο βουνό το απόγευμα κάμνει κρύο. | Water, a hat, and a jacket. Up in the mountains it gets cold in the afternoon. |
-| Νίκος | Να φέρω τζιαι κάτι να φάμεν στη στράτα; | Should I bring something to eat on the way too? |
-| Γιώργος | Αν θέλεις, φέρε νάκκον φρούτα. Η Ελένη εννά φέρει σάντουιτς. | If you like, bring some fruit. Eleni will bring sandwiches. |
-| Νίκος | Τέλεια. Τζιαι την Κυριακή; | Perfect. And on Sunday? |
-| Γιώργος | Την Κυριακή εν έχω τίποτε. Ίσως να πάμεν θάλασσα για να χαρεί τζιαι η Χρυστάλλα. | On Sunday I have nothing on. Maybe we'll go to the sea so Chrystalla is happy too. |
-| Νίκος | Συμφωνώ! Άτε, τα λαλούμεν το Σάββατο. | Agreed! Right, see you Saturday. |
-| Γιώργος | Στες οχτώ, Νίκο! Να μεν σε περιμένω! | At eight, Nicos! Don't keep me waiting! |
-| Νίκος | Εννά είμαι έτοιμος, ορκίζουμαι σου. | I'll be ready, I swear. |
+|         | Κυπριακά                                                                                                  | English                                                                                       |
+| ------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Γιώργος | Έλα ρε Νίκο, ίντα κάμνεις;                                                                                | Hey Nicos, how's it going?                                                                    |
+| Νίκος   | Γεια σου Γιώργο! Εδώ, ξεκουράζουμαι. Εσού;                                                                | Hi Giorgos! Just resting here. You?                                                           |
+| Γιώργος | Άκου. Το Σάββατο θέλουμεν να πάμεν Τρόοδος με την Ελένη τζιαι τη Χρυστάλλα. Έρκεσαι;                      | Listen. On Saturday we want to go to Troodos with Eleni and Chrystalla. Are you coming?       |
+| Νίκος   | Τρόοδος; Ίντα έσιει να κάμουμεν τζιαμαί;                                                                  | Troodos? What is there to do there?                                                           |
+| Γιώργος | Σκέφτουμαστεν να κάμουμεν το μονοπάτι ως τον καταρράκτη των Καληδονίων, τζιαι μετά να φάμεν στις Πλάτρες. | We're thinking of doing the trail to the Caledonia waterfall, and then eating in Platres.     |
+| Νίκος   | Ακούεται ωραίο. Αμμά εν δύσκολο το μονοπάτι;                                                              | Sounds nice. But is the trail hard?                                                           |
+| Γιώργος | Όι, μια ώρα περίπου. Μόνο να φορέσεις καλά παπούτσια.                                                     | No, about an hour. Just wear good shoes.                                                      |
+| Νίκος   | Τζιαι η Χρυστάλλα εν ήθελε θάλασσα;                                                                       | And didn't Chrystalla want the sea?                                                           |
+| Γιώργος | Ήθελε Κάβο Γκρέκο, αμμά της είπαμεν ότι το βουνό εν πκιο δροσερό τώρα. Εσυμφώνησε τελικά.                 | She wanted Cape Greco, but we told her the mountains are cooler now. She agreed in the end.   |
+| Νίκος   | Ε καλά. Τζιαι αν βρέξει;                                                                                  | Fair enough. And if it rains?                                                                 |
+| Γιώργος | Εν να βρέξει, είδα τον καιρό. Αν βρέξει, κάθουμαστεν σε ένα καφενείο τζιαι πίνουμεν ζιβανία!              | It won't rain, I checked the weather. If it rains, we sit in a coffee shop and drink zivania! |
+| Νίκος   | Χαχα, εν κακή ιδέα ούτε τούτη. Ίντα ώρα ξεκινούμεν;                                                       | Haha, that's not a bad idea either. What time do we leave?                                    |
+| Γιώργος | Στες οχτώ το πρωί. Εν θέλουμεν να πιάσουμεν ζέστη στο μονοπάτι.                                           | At eight in the morning. We don't want to get caught in the heat on the trail.                |
+| Νίκος   | Οχτώ; Το Σάββατο; Ρε Γιώργο...                                                                            | Eight? On a Saturday? Come on, Giorgos...                                                     |
+| Γιώργος | Άτε, εν να πεθάνεις! Εννά περάσω να σε πάρω με το αυτοκίνητο μου.                                         | Come on, you won't die! I'll come by and pick you up in my car.                               |
+| Νίκος   | Ντάξει, ντάξει. Ίντα να φέρω;                                                                             | OK, OK. What should I bring?                                                                  |
+| Γιώργος | Νερό, καπέλο, τζιαι ένα ζακέττο. Πάνω στο βουνό το απόγευμα κάμνει κρύο.                                  | Water, a hat, and a jacket. Up in the mountains it gets cold in the afternoon.                |
+| Νίκος   | Να φέρω τζιαι κάτι να φάμεν στη στράτα;                                                                   | Should I bring something to eat on the way too?                                               |
+| Γιώργος | Αν θέλεις, φέρε νάκκον φρούτα. Η Ελένη εννά φέρει σάντουιτς.                                              | If you like, bring some fruit. Eleni will bring sandwiches.                                   |
+| Νίκος   | Τέλεια. Τζιαι την Κυριακή;                                                                                | Perfect. And on Sunday?                                                                       |
+| Γιώργος | Την Κυριακή εν έχω τίποτε. Ίσως να πάμεν θάλασσα για να χαρεί τζιαι η Χρυστάλλα.                          | On Sunday I have nothing on. Maybe we'll go to the sea so Chrystalla is happy too.            |
+| Νίκος   | Συμφωνώ! Άτε, τα λαλούμεν το Σάββατο.                                                                     | Agreed! Right, see you Saturday.                                                              |
+| Γιώργος | Στες οχτώ, Νίκο! Να μεν σε περιμένω!                                                                      | At eight, Nicos! Don't keep me waiting!                                                       |
+| Νίκος   | Εννά είμαι έτοιμος, ορκίζουμαι σου.                                                                       | I'll be ready, I swear.                                                                       |

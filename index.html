@@ -1,49 +1,84 @@
 <!doctype html>
 <html lang="el">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'">
-  <meta name="theme-color" content="#0f4c5c">
-  <title>Κυπριακά</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header class="topbar">
-    <button id="back" class="icon-btn" type="button" aria-label="Back" hidden>←</button>
-    <h1 id="page-title">Κυπριακά</h1>
-  </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'"
+    />
+    <meta name="theme-color" content="#0f4c5c" />
+    <title>Κυπριακά</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <button id="back" class="icon-btn" type="button" aria-label="Back" hidden>
+        ←
+      </button>
+      <h1 id="page-title">Κυπριακά</h1>
+    </header>
 
-  <p id="voice-warning" class="warning" hidden>
-    No Greek voice found. On Android: Settings → Accessibility → Text-to-speech → Google → install Greek.
-  </p>
+    <p id="voice-warning" class="warning" hidden>
+      No Greek voice found. On Android: Settings → Accessibility →
+      Text-to-speech → Google → install Greek.
+    </p>
 
-  <main>
-    <section id="home" aria-live="polite"></section>
+    <main>
+      <section id="home" aria-live="polite"></section>
 
-    <section id="lesson" hidden>
-      <div id="modes" class="modes" role="group" aria-label="Practice mode"></div>
-      <p id="mode-hint" class="hint"></p>
-      <ol id="lines" class="lines"></ol>
-    </section>
-  </main>
+      <section id="lesson" hidden>
+        <div
+          id="modes"
+          class="modes"
+          role="group"
+          aria-label="Practice mode"
+        ></div>
+        <p id="mode-hint" class="hint"></p>
+        <ol id="lines" class="lines"></ol>
+      </section>
+    </main>
 
-  <footer id="player" class="player" hidden>
-    <div class="settings">
-      <label>Speed <input id="rate" type="range" min="0.6" max="1.2" step="0.05"> <output id="rate-out"></output></label>
-      <label>Your time <input id="pause" type="range" min="1" max="3" step="0.25"> <output id="pause-out"></output></label>
-      <label class="check"><input id="show-text" type="checkbox"> Show hidden text</label>
-    </div>
-    <div class="transport">
-      <button id="prev" class="icon-btn" type="button" aria-label="Previous line">⏮</button>
-      <button id="play" class="play-btn" type="button" aria-label="Play">▶</button>
-      <button id="next" class="icon-btn" type="button" aria-label="Next line">⏭</button>
-    </div>
-  </footer>
+    <footer id="player" class="player" hidden>
+      <div class="settings">
+        <label
+          >Speed
+          <input id="rate" type="range" min="0.6" max="1.2" step="0.05" />
+          <output id="rate-out"></output
+        ></label>
+        <label
+          >Your time
+          <input id="pause" type="range" min="1" max="3" step="0.25" />
+          <output id="pause-out"></output
+        ></label>
+        <label class="check"
+          ><input id="show-text" type="checkbox" /> Show hidden text</label
+        >
+      </div>
+      <div class="transport">
+        <button
+          id="prev"
+          class="icon-btn"
+          type="button"
+          aria-label="Previous line"
+        >
+          ⏮
+        </button>
+        <button id="play" class="play-btn" type="button" aria-label="Play">
+          ▶
+        </button>
+        <button id="next" class="icon-btn" type="button" aria-label="Next line">
+          ⏭
+        </button>
+      </div>
+    </footer>
 
-  <script src="library.js"></script>
-  <script src="app.js"></script>
-</body>
+    <script src="library.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
