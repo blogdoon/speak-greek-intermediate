@@ -8,7 +8,10 @@ test("normalizeWord strips accents, punctuation and final sigma", () => {
 });
 
 test("scoreAttempt gives full score for an exact attempt", () => {
-  const r = p.scoreAttempt("Καλημέρα κυρία Μαρούλλα.", "καλημέρα κυρία μαρούλα");
+  const r = p.scoreAttempt(
+    "Καλημέρα κυρία Μαρούλλα.",
+    "καλημέρα κυρία μαρούλα",
+  );
   assert.equal(r.score, 1);
 });
 

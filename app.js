@@ -128,7 +128,10 @@ async function loadLibrary() {
       id: `${file}#${i}`,
       group: group.id,
       title: s.title,
-      lines: s.lines.map((line) => ({ ...line, key: `${file}#${i}::${line.el}` })),
+      lines: s.lines.map((line) => ({
+        ...line,
+        key: `${file}#${i}::${line.el}`,
+      })),
     })),
   );
 }
@@ -296,13 +299,20 @@ function lineItem(line, i) {
     item.append(h("span", { className: "speaker", textContent: line.speaker }));
   item.append(
     h("span", { className: "el", lang: "el", textContent: line.el }),
-    h("span", { className: "el-hint", lang: "el", textContent: hintText(line.el) }),
+    h("span", {
+      className: "el-hint",
+      lang: "el",
+      textContent: hintText(line.el),
+    }),
   );
   if (line.en)
     item.append(
       h("span", { className: "en", lang: "en", textContent: line.en }),
     );
-  item.append(lineActions(line, item), h("div", { className: "result", hidden: true }));
+  item.append(
+    lineActions(line, item),
+    h("div", { className: "result", hidden: true }),
+  );
   item.addEventListener("click", () => {
     stop();
     index = i;
@@ -312,7 +322,12 @@ function lineItem(line, i) {
 }
 
 function actionButton(text, label, onClick) {
-  const button = h("button", { type: "button", className: "line-btn", textContent: text, title: label });
+  const button = h("button", {
+    type: "button",
+    className: "line-btn",
+    textContent: text,
+    title: label,
+  });
   button.setAttribute("aria-label", label);
   button.addEventListener("click", onClick);
   return button;
@@ -322,14 +337,24 @@ function lineActions(line, item) {
   const bar = h("div", { className: "line-actions" });
   bar.addEventListener("click", (e) => e.stopPropagation());
   if (Recognition)
-    bar.append(actionButton("Πε το", "Say it and check pronunciation", () => checkLine(line, item)));
+    bar.append(
+      actionButton("Πε το", "Say it and check pronunciation", () =>
+        checkLine(line, item),
+      ),
+    );
   if (current.id === REVIEW_ID) {
     bar.append(
-      actionButton("Ξανά", "Still hard: review again tomorrow", () => gradeReview(line, item, false)),
-      actionButton("Το ξέρω", "I know it: review later", () => gradeReview(line, item, true)),
+      actionButton("Ξανά", "Still hard: review again tomorrow", () =>
+        gradeReview(line, item, false),
+      ),
+      actionButton("Το ξέρω", "I know it: review later", () =>
+        gradeReview(line, item, true),
+      ),
     );
   } else {
-    const star = actionButton("★", "Add to daily review", () => toggleReview(line, star));
+    const star = actionButton("★", "Add to daily review", () =>
+      toggleReview(line, star),
+    );
     star.classList.add("star");
     star.setAttribute("aria-pressed", String(line.key in reviews));
     bar.append(star);
@@ -392,7 +417,10 @@ function showScore(item, result) {
   box.className = `result ${result.score >= PASS_SCORE ? "pass" : "fail"}`;
   const words = h("span", { className: "words", lang: "el" });
   for (const word of result.words)
-    words.append(h("span", { className: word.ok ? "" : "miss", textContent: word.text }), " ");
+    words.append(
+      h("span", { className: word.ok ? "" : "miss", textContent: word.text }),
+      " ",
+    );
   box.replaceChildren(
     h("strong", { textContent: `${Math.round(result.score * 100)}%` }),
     words,
@@ -403,7 +431,8 @@ function showScore(item, result) {
 function recognitionErrorText(error) {
   if (error === "not-allowed" || error === "service-not-allowed")
     return "Allow microphone access to check your pronunciation.";
-  if (error === "network") return "The pronunciation check needs an internet connection.";
+  if (error === "network")
+    return "The pronunciation check needs an internet connection.";
   return "Δεν άκουσα καλά. Try again.";
 }
 
@@ -418,7 +447,10 @@ function checkLine(line, item) {
   showResultMessage(item, "Ακούω… πε τη φράση.", "listening");
   rec.onresult = (e) => {
     finished = true;
-    const result = bestAttempt(line.el, [...e.results[0]].map((a) => a.transcript));
+    const result = bestAttempt(
+      line.el,
+      [...e.results[0]].map((a) => a.transcript),
+    );
     showScore(item, result);
     if (result.score < PASS_SCORE && current?.id !== REVIEW_ID) {
       addReview(line);
@@ -431,7 +463,8 @@ function checkLine(line, item) {
   };
   rec.onend = () => {
     listening = null;
-    if (!finished) showResultMessage(item, "Δεν άκουσα τίποτε. Try again.", "error");
+    if (!finished)
+      showResultMessage(item, "Δεν άκουσα τίποτε. Try again.", "error");
   };
   rec.start();
 }
@@ -447,7 +480,12 @@ function setReview(key, entry) {
 function addReview(line) {
   if (line.key in reviews) return;
   const { speaker, el, en } = line;
-  setReview(line.key, { key: line.key, line: { speaker, el, en }, step: 0, due: dayNumber() });
+  setReview(line.key, {
+    key: line.key,
+    line: { speaker, el, en },
+    step: 0,
+    due: dayNumber(),
+  });
 }
 
 function toggleReview(line, button) {
@@ -460,12 +498,22 @@ function gradeReview(line, item, known) {
   const entry = reviews[line.key];
   if (!entry) return;
   const today = dayNumber();
-  const next = known ? scheduleKnown(entry, today) : scheduleAgain(entry, today);
+  const next = known
+    ? scheduleKnown(entry, today)
+    : scheduleAgain(entry, today);
   setReview(line.key, next);
   const days = next ? next.due - today : 0;
-  const note = !next ? "Το έμαθες!" : days === 1 ? "Ξανά αύριο" : `Ξανά σε ${days} μέρες`;
+  const note = !next
+    ? "Το έμαθες!"
+    : days === 1
+      ? "Ξανά αύριο"
+      : `Ξανά σε ${days} μέρες`;
   item.classList.add("graded");
-  item.querySelector(".line-actions").replaceChildren(h("span", { className: "graded-note", textContent: note }));
+  item
+    .querySelector(".line-actions")
+    .replaceChildren(
+      h("span", { className: "graded-note", textContent: note }),
+    );
 }
 
 function dueReviews() {
@@ -539,13 +587,17 @@ function reviewCard() {
   const queued = Object.keys(reviews).length;
   if (!queued) return null;
   const due = dueReviews().length;
-  const card = h(due ? "a" : "div", { className: due ? "review-card" : "review-card idle" });
+  const card = h(due ? "a" : "div", {
+    className: due ? "review-card" : "review-card idle",
+  });
   if (due) card.href = `#lesson=${REVIEW_ID}`;
   card.append(
     h("span", { className: "review-title", textContent: "Επανάληψη σήμερα" }),
     h("span", {
       className: "review-meta",
-      textContent: due ? `${due} to review` : `Nothing due today · ${queued} in queue`,
+      textContent: due
+        ? `${due} to review`
+        : `Nothing due today · ${queued} in queue`,
     }),
   );
   return card;
