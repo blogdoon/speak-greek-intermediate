@@ -8,7 +8,7 @@
     />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; media-src 'self' blob:; base-uri 'self'"
     />
     <meta name="theme-color" content="#0f4c5c" />
     <title>Κυπριακά</title>
@@ -22,6 +22,7 @@
         ←
       </button>
       <h1 id="page-title">Κυπριακά</h1>
+      <span id="goal" class="goal" role="status"></span>
     </header>
 
     <p id="voice-warning" class="warning" hidden>
@@ -38,6 +39,13 @@
           class="modes"
           role="group"
           aria-label="Practice mode"
+        ></div>
+        <div
+          id="roles"
+          class="roles"
+          role="group"
+          aria-label="Your role"
+          hidden
         ></div>
         <p id="mode-hint" class="hint"></p>
         <button
@@ -61,6 +69,9 @@
           >Your time
           <input id="pause" type="range" min="1" max="3" step="0.25" />
           <output id="pause-out"></output
+        ></label>
+        <label id="voice-label" hidden
+          >Voice <select id="voice"></select
         ></label>
         <label class="check"
           ><input id="show-text" type="checkbox" /> Show hidden text</label

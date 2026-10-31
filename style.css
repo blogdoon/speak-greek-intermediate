@@ -22,7 +22,7 @@
   --shadow-lift: 0 6px 18px rgb(15 76 92 / 0.14);
   --duration-fast: 150ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --player-height: 168px;
+  --player-height: 204px;
 }
 
 * {
@@ -87,6 +87,21 @@ button {
 
 .topbar .icon-btn:active {
   background: rgb(255 255 255 / 0.15);
+}
+
+.goal {
+  margin-left: auto;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.goal.met {
+  border-color: transparent;
+  background: var(--color-olive);
 }
 
 .warning {
@@ -214,6 +229,30 @@ main {
   color: var(--color-paper);
 }
 
+.roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.role {
+  min-height: 40px;
+  padding: 0.3rem 0.85rem;
+  border: 1px solid var(--color-clay);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-clay);
+  font-family: var(--font-greek);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.role[aria-pressed="true"] {
+  background: var(--color-clay);
+  color: var(--color-paper);
+}
+
 .hint {
   margin: 0.75rem 0 1.25rem;
   font-size: var(--text-sm);
@@ -246,7 +285,7 @@ main {
   border-radius: var(--radius-sm);
 }
 
-.line.nicos {
+.line.mine {
   justify-self: end;
   border-radius: var(--radius-lg) var(--radius-lg) 4px var(--radius-lg);
   background: var(--color-sea-soft);
@@ -267,7 +306,7 @@ main {
   color: var(--color-clay);
 }
 
-.line.nicos .speaker {
+.line.mine .speaker {
   color: var(--color-sea);
 }
 
@@ -353,6 +392,12 @@ main {
   color: var(--color-clay);
 }
 
+.line-btn:not(.star)[aria-pressed="true"] {
+  border-color: var(--color-clay);
+  background: var(--color-clay);
+  color: var(--color-paper);
+}
+
 .graded-note {
   font-size: var(--text-sm);
   font-weight: 600;
@@ -413,6 +458,33 @@ main {
 }
 
 /* ---------- Review card ---------- */
+
+.goal-card {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-lg);
+  background: var(--color-sea);
+  color: var(--color-paper);
+}
+
+.goal-title {
+  font-family: var(--font-greek);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.goal-card progress {
+  width: 100%;
+  height: 8px;
+  accent-color: var(--color-clay);
+}
+
+.goal-meta {
+  font-size: var(--text-sm);
+  opacity: 0.85;
+}
 
 .review-card {
   display: grid;
@@ -489,6 +561,21 @@ main {
 
 .settings .check {
   grid-column: 1 / -1;
+}
+
+#voice-label {
+  grid-column: 1 / -1;
+}
+
+.settings select {
+  flex: 1;
+  min-width: 0;
+  min-height: 32px;
+  border: 1px solid rgb(15 76 92 / 0.25);
+  border-radius: var(--radius-sm);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font: inherit;
 }
 .settings .check input {
   accent-color: var(--color-sea);

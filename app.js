@@ -4,13 +4,19 @@ const SETTINGS_KEY = "skg-settings";
 const DONE_KEY = "skg-done";
 const REVIEW_KEY = "skg-review";
 const FADE_KEY = "skg-fade";
+const PROGRESS_KEY = "skg-progress";
 const REVIEW_ID = "review";
 const NICOS = "Νίκος";
 const FADE_LABELS = ["Κείμενο: Όλο", "Κείμενο: Αρχικά", "Κείμενο: Κρυφό"];
 const MAX_FADE = FADE_LABELS.length - 1;
 const LINE_GAP_MS = 600;
+const SHADOW_GAP_MS = 250;
+const COMPARE_GAP_MS = 400;
+const CHECK_MAX_MS = 8000;
+const RECORD_MAX_MS = 15000;
 const MIN_TURN_MS = 1200;
 const MS_PER_CHAR = 70;
+const VOICE_SAMPLE = "Καλημέρα! Ίντα μου κάμνεις;";
 
 const MODES = {
   listen: { label: "Άκου", hint: "Listen: every line is read in Greek." },
@@ -18,9 +24,13 @@ const MODES = {
     label: "Επανάλαβε",
     hint: "Repeat: after each line, say it back out loud.",
   },
-  nicos: {
-    label: "Είσαι ο Νίκος",
-    hint: "Be Nicos: the phone is the other person. Say Nicos’s lines yourself; then you hear the correct line.",
+  shadow: {
+    label: "Σκιά",
+    hint: "Shadow: speak along with the voice, at the same time. No pauses.",
+  },
+  role: {
+    label: "Παίξε ρόλο",
+    hint: "Role-play: pick who you are. Say your lines when it is your turn; the phone plays everyone else, then the correct line.",
   },
   recall: {
     label: "Θυμήσου",
@@ -33,14 +43,29 @@ const settings = {
   rate: 0.9,
   pause: 1.5,
   showText: false,
+  voiceEl: "",
+  roles: {},
   ...readJson(SETTINGS_KEY, {}),
 };
+if (settings.mode === "nicos") settings.mode = "role";
 const done = new Set(readJson(DONE_KEY, []));
 const Recognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+const canRecord = Boolean(
+  window.MediaRecorder && navigator.mediaDevices?.getUserMedia,
+);
+const recordings = new Map();
 
 let reviews = readJson(REVIEW_KEY, {});
 let fade = readJson(FADE_KEY, {});
+let progress = readJson(PROGRESS_KEY, {
+  day: null,
+  count: 0,
+  streak: 0,
+  goalDay: null,
+});
 let listening = null;
+let recording = null;
+let playback = null;
 let lessons = [];
 let current = null;
 let index = 0;
@@ -141,8 +166,20 @@ async function loadLibrary() {
 function pickVoices() {
   const all = speechSynthesis.getVoices();
   const byLang = (re) => all.find((v) => re.test(v.lang));
-  voices = { el: byLang(/^el/i), en: byLang(/^en[-_]gb/i) ?? byLang(/^en/i) };
+  const greek = all.filter((v) => /^el/i.test(v.lang));
+  voices = {
+    el: greek.find((v) => v.voiceURI === settings.voiceEl) ?? greek[0],
+    en: byLang(/^en[-_]gb/i) ?? byLang(/^en/i),
+  };
   $("#voice-warning").hidden = all.length === 0 || Boolean(voices.el);
+  $("#voice-label").hidden = greek.length < 2;
+  $("#voice").replaceChildren(
+    ...greek.map((v) => {
+      const option = h("option", { value: v.voiceURI, textContent: v.name });
+      option.selected = v === voices.el;
+      return option;
+    }),
+  );
 }
 
 function speechText(text) {
@@ -173,24 +210,41 @@ function turnMs(text) {
   );
 }
 
+function isYourLine(line) {
+  const mode = activeMode();
+  return (
+    (mode === "recall" && Boolean(line.en)) ||
+    (mode === "role" && line.speaker === roleFor(current))
+  );
+}
+
+async function yourTurn(line, id) {
+  const item = $("#lines").children[index];
+  const ms = turnMs(line.el);
+  if (activeMode() !== "role" || !Recognition) return wait(ms);
+  showResultMessage(item, "Είναι η σειρά σου…", "listening");
+  const [outcome] = await Promise.all([recognise(ms * 2), wait(ms)]);
+  if (id === runId) showOutcome(line, item, outcome);
+  else item.querySelector(".result").hidden = true;
+}
+
 async function playLine(line, id) {
   const mode = activeMode();
-  const isYourTurn =
-    (mode === "recall" && line.en) ||
-    (mode === "nicos" && line.speaker === NICOS);
 
-  if (isYourTurn) {
+  if (isYourLine(line)) {
     if (mode === "recall") await speak(line.en, "en", id);
     if (id !== runId) return;
-    await wait(turnMs(line.el));
+    await yourTurn(line, id);
     if (id !== runId) return;
   }
 
   reveal(index);
   const spokenMs = await speak(line.el, "el", id);
-  await wait(
-    mode === "repeat" ? spokenMs * settings.pause + LINE_GAP_MS : LINE_GAP_MS,
-  );
+  const gapMs = {
+    repeat: spokenMs * settings.pause + LINE_GAP_MS,
+    shadow: SHADOW_GAP_MS,
+  };
+  await wait(gapMs[mode] ?? LINE_GAP_MS);
 }
 
 async function play() {
@@ -202,6 +256,7 @@ async function play() {
     setActive(index);
     await playLine(current.lines[index], id);
     if (id !== runId) return;
+    countPractice();
     index += 1;
   }
   markDone(current.id);
@@ -214,6 +269,9 @@ function stop() {
   runId += 1;
   speechSynthesis.cancel();
   stopListening();
+  stopRecording();
+  playback?.pause();
+  playback = null;
   setPlaying(false);
 }
 
@@ -252,9 +310,28 @@ function setPlaying(on) {
 
 /* ---------- Lesson view ---------- */
 
+function speakers(lesson) {
+  return [...new Set(lesson.lines.map((l) => l.speaker).filter(Boolean))];
+}
+
+function roleFor(lesson) {
+  const names = speakers(lesson);
+  const saved = settings.roles[lesson.id];
+  if (names.includes(saved)) return saved;
+  return names.includes(NICOS) ? NICOS : names[0];
+}
+
+function setRole(name) {
+  stop();
+  settings.roles = { ...settings.roles, [current.id]: name };
+  saveSettings();
+  renderModes();
+  applyConcealment();
+}
+
 function availableModes(lesson) {
-  const modes = ["listen", "repeat"];
-  if (lesson.lines.some((l) => l.speaker === NICOS)) modes.push("nicos");
+  const modes = ["listen", "repeat", "shadow"];
+  if (speakers(lesson).length > 0) modes.push("role");
   if (lesson.lines.some((l) => l.en)) modes.push("recall");
   return modes;
 }
@@ -266,12 +343,7 @@ function activeMode() {
 }
 
 function isConcealed(line) {
-  if (settings.showText) return false;
-  const mode = activeMode();
-  return (
-    (mode === "recall" && Boolean(line.en)) ||
-    (mode === "nicos" && line.speaker === NICOS)
-  );
+  return !settings.showText && isYourLine(line);
 }
 
 function renderModes() {
@@ -288,13 +360,25 @@ function renderModes() {
       return button;
     }),
   );
+  const role = roleFor(current);
+  $("#roles").hidden = mode !== "role";
+  $("#roles").replaceChildren(
+    ...speakers(current).map((name) => {
+      const button = h("button", {
+        type: "button",
+        className: "role",
+        textContent: name,
+      });
+      button.setAttribute("aria-pressed", String(name === role));
+      button.addEventListener("click", () => setRole(name));
+      return button;
+    }),
+  );
   $("#mode-hint").textContent = MODES[mode].hint;
 }
 
 function lineItem(line, i) {
-  const item = h("li", {
-    className: line.speaker === NICOS ? "line nicos" : "line",
-  });
+  const item = h("li", { className: "line" });
   if (line.speaker)
     item.append(h("span", { className: "speaker", textContent: line.speaker }));
   item.append(
@@ -342,6 +426,18 @@ function lineActions(line, item) {
         checkLine(line, item),
       ),
     );
+  if (canRecord) {
+    const compareBtn = actionButton(
+      "Σύγκρινε",
+      "Play the voice, then your recording",
+      () => compare(line),
+    );
+    compareBtn.hidden = !recordings.has(line.key);
+    const recordBtn = actionButton("Γράψε", "Record yourself saying it", () =>
+      toggleRecording(line, recordBtn, compareBtn),
+    );
+    bar.append(recordBtn, compareBtn);
+  }
   if (current.id === REVIEW_ID) {
     bar.append(
       actionButton("Ξανά", "Still hard: review again tomorrow", () =>
@@ -373,8 +469,10 @@ function setFade(id, level) {
 
 function applyConcealment() {
   const level = settings.showText ? 0 : fadeLevel();
+  const you = roleFor(current);
   [...$("#lines").children].forEach((item, i) => {
     const concealed = isConcealed(current.lines[i]);
+    item.classList.toggle("mine", current.lines[i].speaker === you);
     item.classList.toggle("concealed", concealed);
     item.classList.toggle("fade-hints", !concealed && level === 1);
     item.classList.toggle("fade-hidden", !concealed && level === 2);
@@ -396,12 +494,33 @@ function renderLesson(lesson) {
 /* ---------- Pronunciation check ---------- */
 
 function stopListening() {
-  if (!listening) return;
-  const { rec, item } = listening;
+  listening?.abort();
   listening = null;
-  rec.onend = rec.onerror = rec.onresult = null;
-  rec.abort();
-  item.querySelector(".result").hidden = true;
+}
+
+// Resolves with { heard: [...] } or { error }; never rejects.
+function recognise(maxMs) {
+  return new Promise((resolve) => {
+    const rec = new Recognition();
+    rec.lang = "el-GR";
+    rec.maxAlternatives = 5;
+    rec.interimResults = false;
+    let outcome = { error: "no-speech" };
+    const timer = setTimeout(() => rec.stop(), maxMs);
+    rec.onresult = (e) => {
+      outcome = { heard: [...e.results[0]].map((a) => a.transcript) };
+    };
+    rec.onerror = (e) => {
+      outcome = { error: e.error };
+    };
+    rec.onend = () => {
+      clearTimeout(timer);
+      if (listening === rec) listening = null;
+      resolve(outcome);
+    };
+    listening = rec;
+    rec.start();
+  });
 }
 
 function showResultMessage(item, text, kind) {
@@ -433,40 +552,139 @@ function recognitionErrorText(error) {
     return "Allow microphone access to check your pronunciation.";
   if (error === "network")
     return "The pronunciation check needs an internet connection.";
+  if (error === "no-speech") return "Δεν άκουσα τίποτε. Try again.";
   return "Δεν άκουσα καλά. Try again.";
 }
 
-function checkLine(line, item) {
+function showOutcome(line, item, outcome) {
+  if (outcome.error) {
+    showResultMessage(item, recognitionErrorText(outcome.error), "error");
+    return;
+  }
+  const result = bestAttempt(line.el, outcome.heard);
+  showScore(item, result);
+  if (result.score < PASS_SCORE && current?.id !== REVIEW_ID) {
+    addReview(line);
+    item.querySelector(".star")?.setAttribute("aria-pressed", "true");
+  }
+}
+
+async function checkLine(line, item) {
   stop();
-  const rec = new Recognition();
-  rec.lang = "el-GR";
-  rec.maxAlternatives = 5;
-  rec.interimResults = false;
-  listening = { rec, item };
-  let finished = false;
+  const id = runId;
   showResultMessage(item, "Ακούω… πε τη φράση.", "listening");
-  rec.onresult = (e) => {
-    finished = true;
-    const result = bestAttempt(
-      line.el,
-      [...e.results[0]].map((a) => a.transcript),
-    );
-    showScore(item, result);
-    if (result.score < PASS_SCORE && current?.id !== REVIEW_ID) {
-      addReview(line);
-      item.querySelector(".star")?.setAttribute("aria-pressed", "true");
-    }
+  const outcome = await recognise(CHECK_MAX_MS);
+  if (id !== runId) {
+    item.querySelector(".result").hidden = true;
+    return;
+  }
+  showOutcome(line, item, outcome);
+  if (!outcome.error) countPractice();
+}
+
+/* ---------- Record and compare ---------- */
+
+function stopRecording(thenCompare = false) {
+  if (recording?.recorder.state !== "recording") return;
+  recording.thenCompare = thenCompare;
+  recording.recorder.stop();
+}
+
+async function toggleRecording(line, recordBtn, compareBtn) {
+  if (recording?.button === recordBtn) {
+    stopRecording(true);
+    return;
+  }
+  stop();
+  const id = runId;
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch {
+    recordBtn.textContent = "Χωρίς μικρόφωνο";
+    return;
+  }
+  if (id !== runId) {
+    stream.getTracks().forEach((t) => t.stop());
+    return;
+  }
+  const recorder = new MediaRecorder(stream);
+  const session = { recorder, button: recordBtn, thenCompare: false };
+  const chunks = [];
+  const timer = setTimeout(() => stopRecording(true), RECORD_MAX_MS);
+  recorder.ondataavailable = (e) => chunks.push(e.data);
+  recorder.onstop = () => {
+    clearTimeout(timer);
+    stream.getTracks().forEach((t) => t.stop());
+    if (recording === session) recording = null;
+    recordBtn.textContent = "Γράψε";
+    recordBtn.setAttribute("aria-pressed", "false");
+    URL.revokeObjectURL(recordings.get(line.key));
+    const blob = new Blob(chunks, { type: recorder.mimeType });
+    recordings.set(line.key, URL.createObjectURL(blob));
+    compareBtn.hidden = false;
+    if (!session.thenCompare) return;
+    countPractice();
+    compare(line);
   };
-  rec.onerror = (e) => {
-    finished = true;
-    showResultMessage(item, recognitionErrorText(e.error), "error");
-  };
-  rec.onend = () => {
-    listening = null;
-    if (!finished)
-      showResultMessage(item, "Δεν άκουσα τίποτε. Try again.", "error");
-  };
-  rec.start();
+  recording = session;
+  recordBtn.textContent = "Σταμάτα";
+  recordBtn.setAttribute("aria-pressed", "true");
+  recorder.start();
+}
+
+async function compare(line) {
+  stop();
+  const id = runId;
+  await speak(line.el, "el", id);
+  await wait(COMPARE_GAP_MS);
+  if (id !== runId || !recordings.has(line.key)) return;
+  playback = new Audio(recordings.get(line.key));
+  // A rejected play() only means the user moved on; nothing to report.
+  playback.play().catch(() => {});
+}
+
+/* ---------- Daily goal ---------- */
+
+function countPractice() {
+  progress = recordPractice(progress, dayNumber());
+  localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+  renderGoal();
+}
+
+function renderGoal() {
+  const count = todayCount(progress, dayNumber());
+  const goal = $("#goal");
+  goal.textContent = `${Math.min(count, DAILY_GOAL)}/${DAILY_GOAL}`;
+  goal.classList.toggle("met", count >= DAILY_GOAL);
+  goal.setAttribute(
+    "aria-label",
+    `Today: ${count} of ${DAILY_GOAL} lines practised`,
+  );
+}
+
+function goalCard() {
+  const today = dayNumber();
+  const count = todayCount(progress, today);
+  const streak = currentStreak(progress, today);
+  const card = h("div", { className: "goal-card" });
+  const bar = h("progress", { max: DAILY_GOAL, value: Math.min(count, DAILY_GOAL) });
+  bar.setAttribute("aria-label", "Daily goal");
+  card.append(
+    h("span", {
+      className: "goal-title",
+      textContent: streak === 1 ? "Σερί: 1 μέρα" : `Σερί: ${streak} μέρες`,
+    }),
+    bar,
+    h("span", {
+      className: "goal-meta",
+      textContent:
+        count >= DAILY_GOAL
+          ? `Goal reached today · ${count} lines`
+          : `${count} of ${DAILY_GOAL} lines today`,
+    }),
+  );
+  return card;
 }
 
 /* ---------- Daily review ---------- */
@@ -502,6 +720,7 @@ function gradeReview(line, item, known) {
     ? scheduleKnown(entry, today)
     : scheduleAgain(entry, today);
   setReview(line.key, next);
+  countPractice();
   const days = next ? next.due - today : 0;
   const note = !next
     ? "Το έμαθες!"
@@ -607,6 +826,7 @@ function renderHome() {
   $("#page-title").textContent = "Κυπριακά";
   const card = reviewCard();
   $("#home").replaceChildren(
+    goalCard(),
     ...(card ? [card] : []),
     ...LIBRARY.map((group) => {
       const section = h("section", { className: `group group-${group.id}` });
@@ -679,7 +899,15 @@ function bindControls() {
     saveSettings();
     applyConcealment();
   });
+  $("#voice").addEventListener("change", (e) => {
+    settings.voiceEl = e.target.value;
+    saveSettings();
+    pickVoices();
+    stop();
+    speak(VOICE_SAMPLE, "el", runId);
+  });
   syncSettingsUi();
+  renderGoal();
 }
 
 function showLoadError(err) {

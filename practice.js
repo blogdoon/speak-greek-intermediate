@@ -2,6 +2,7 @@ const REVIEW_INTERVALS_DAYS = [1, 3, 7, 14, 30];
 const WORD_MATCH_THRESHOLD = 0.7;
 const PASS_SCORE = 0.8;
 const DAY_MS = 86_400_000;
+const DAILY_GOAL = 20;
 
 // The recogniser hears standard Greek, so accept common standard forms of Cypriot words.
 const CYPRIOT_EQUIVALENTS = {
@@ -114,6 +115,23 @@ function scheduleKnown(entry, today) {
   return { ...entry, step, due: today + REVIEW_INTERVALS_DAYS[step] };
 }
 
+function todayCount(progress, today) {
+  return progress.day === today ? progress.count : 0;
+}
+
+// The streak counts days in a row on which the daily goal was reached.
+function recordPractice(progress, today, goal = DAILY_GOAL) {
+  const count = todayCount(progress, today) + 1;
+  if (count < goal || progress.goalDay === today)
+    return { ...progress, day: today, count };
+  const streak = progress.goalDay === today - 1 ? progress.streak + 1 : 1;
+  return { ...progress, day: today, count, streak, goalDay: today };
+}
+
+function currentStreak(progress, today) {
+  return progress.goalDay >= today - 1 ? progress.streak : 0;
+}
+
 if (typeof module !== "undefined") {
   module.exports = {
     PASS_SCORE,
@@ -126,5 +144,8 @@ if (typeof module !== "undefined") {
     dayNumber,
     scheduleAgain,
     scheduleKnown,
+    todayCount,
+    recordPractice,
+    currentStreak,
   };
 }
