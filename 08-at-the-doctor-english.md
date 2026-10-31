@@ -1,0 +1,31 @@
+# Στον γιατρό — At the Doctor's
+
+| | Κυπριακά | English |
+| --- | --- | --- |
+| Γραμματέας | Καλημέρα. Έσιετε ραντεβού; | Good morning. Do you have an appointment? |
+| Νίκος | Καλημέρα. Ναι, στες δέκα τζιαι μισή. Νίκος λαλούμαι. | Good morning. Yes, at half past ten. My name is Nicos. |
+| Γραμματέας | Ναι, είδα σας. Έσιετε την κάρτα του ΓΕΣΥ; | Yes, I see you. Do you have your GESY card? |
+| Νίκος | Ναι, ορίστε. | Yes, here you are. |
+| Γραμματέας | Ευχαριστώ. Καθίστε νάκκον, ο γιατρός εννά σας φωνάξει σε λλίο. | Thank you. Take a seat, the doctor will call you shortly. |
+| Γιατρός | Νίκο; Πέρνα μέσα. Ίντα έσιεις; | Nicos? Come in. What's wrong? |
+| Νίκος | Γιατρέ, εν είμαι καλά που την Τρίτη. | Doctor, I haven't been well since Tuesday. |
+| Γιατρός | Πε μου, ίντα νιώθεις; | Tell me, how do you feel? |
+| Νίκος | Πονεί με ο λαιμός μου, έχω βήχα, τζιαι ψες είχα θέρμη. | My throat hurts, I have a cough, and last night I had a fever. |
+| Γιατρός | Πόση θέρμη; | How high was the fever? |
+| Νίκος | Τριάντα οχτώ τζιαι πέντε. | Thirty-eight point five. |
+| Γιατρός | Πονεί σε τζιαι το κεφάλι; | Does your head hurt too? |
+| Νίκος | Ναι, νάκκον. Τζιαι νιώθω πολλά κουρασμένος. | Yes, a little. And I feel very tired. |
+| Γιατρός | Ανοιξε το στόμα σου... Πε «ααα». | Open your mouth... Say "aaa". |
+| Νίκος | Αααα. | Aaaa. |
+| Γιατρός | Ο λαιμός σου έν πολλά κόκκινος. Τώρα να ακούσω τα πνευμόνια. Πάρε βαθιά ανάσα... Τζιαι άλλη μια. | Your throat is very red. Now let me listen to your lungs. Take a deep breath... And another. |
+| Νίκος | Εν κάτι σοβαρό; | Is it something serious? |
+| Γιατρός | Όι, μεν φοάσαι. Εν μια ίωση με αμυγδαλίτιδα. Εννά σου γράψω αντιβίωση για πέντε μέρες. | No, don't worry. It's a virus with tonsillitis. I'll prescribe antibiotics for five days. |
+| Νίκος | Ίνταλως να τα παίρνω; | How should I take them? |
+| Γιατρός | Ένα χάπι το πρωί τζιαι ένα το βράδυ, μετά το φαΐ. Τζιαι αν έσιεις θέρμη, πάρε παρακεταμόλη. | One pill in the morning and one in the evening, after food. And if you have a fever, take paracetamol. |
+| Νίκος | Μπορώ να πάω στη δουλειά αύριον; | Can I go to work tomorrow? |
+| Γιατρός | Όι. Να κάτσεις σπίτι δκυό-τρεις μέρες. Να πίνεις πολλά υγρά τζιαι να ξεκουράζεσαι. Εννά σου δώσω τζιαι πιστοποιητικό για τη δουλειά. | No. Stay home two or three days. Drink plenty of fluids and rest. I'll also give you a sick note for work. |
+| Νίκος | Ευχαριστώ, γιατρέ. | Thank you, doctor. |
+| Γιατρός | Αν σε τρεις μέρες εν είσαι καλύτερα, έλα πάλε να σε δω. | If you're not better in three days, come back and I'll see you again. |
+| Νίκος | Εντάξει. Πού έν το κοντινότερο φαρμακείο; | OK. Where's the nearest pharmacy? |
+| Γιατρός | Ακριβώς απέναντι. Περαστικά σου! | Right across the road. Get well soon! |
+| Νίκος | Ευχαριστώ πολλά. Καλή σας μέρα. | Thank you very much. Have a good day. |

@@ -1,0 +1,27 @@
+# Στη λαϊκή — At the Laiki Market
+
+| | Κυπριακά | English |
+| --- | --- | --- |
+| Πανίκος | Έλα, έλα! Φρέσκα πράματα που το χωράφι! Ντομάτες, αγγούρκα, πεπόνια! | Come, come! Fresh produce from the field! Tomatoes, cucumbers, melons! |
+| Νίκος | Καλημέρα. Πόσα κάμνουν οι ντομάτες; | Good morning. How much are the tomatoes? |
+| Πανίκος | Ένα ευρώ τζιαι πενήντα το κιλό. Γλυτζιές σαν το μέλι! | One fifty a kilo. Sweet as honey! |
+| Νίκος | Δώσ' μου δκυό κιλά. | Give me two kilos. |
+| Πανίκος | Αμέσως. Τζιαι κάτι άλλο; | Right away. Anything else? |
+| Νίκος | Έσιεις κολοκάσι; | Do you have kolokasi? |
+| Πανίκος | Έσιει, ήρτεν σήμμερα το πρωί. Πόσο θέλεις; | Yes, it came in this morning. How much do you want? |
+| Νίκος | Ένα κιλό. Ίνταλως το μαειρεύκουν; | One kilo. How do you cook it? |
+| Πανίκος | Με χοιρινό ή με κοτόπουλο, με σέλινο τζιαι ντομάτα. Η μάνα μου κάμνει το κάθε Κυριακή. Ούλλη η γειτονιά μυρίζει! | With pork or chicken, celery and tomato. My mum makes it every Sunday. The whole neighbourhood smells of it! |
+| Νίκος | Εννά το δοκιμάσω. Τζιαι τούτες οι φράουλες; | I'll try it. And these strawberries? |
+| Πανίκος | Τρία ευρώ το κουτί. Αμμά αν πάρεις δκυό, δίω σου τα πέντε. | Three euros a box. But if you take two, I'll give them to you for five. |
+| Νίκος | Εν νάκκον ακριβές... Ντάξει, δώσ' μου δκυό. | They're a bit expensive... OK, give me two. |
+| Πανίκος | Μπράβο! Θέλεις τζιαι ένα καρπούζι; Έν γλυκό, ορκίζουμαι σου! | Well done! Want a watermelon too? It's sweet, I swear! |
+| Νίκος | Όι, εν μπορώ να το σηκώσω. Ήρτα με τα πόδια. | No, I can't carry it. I came on foot. |
+| Πανίκος | Χαχα, έσιεις δίκαιο. Άλλη φορά. | Haha, you're right. Another time. |
+| Νίκος | Πόσα έν ούλλα; | How much is it all? |
+| Πανίκος | Ντομάτες τρία, κολοκάσι τέσσερα, φράουλες πέντε. Δώδεκα ευρώ. | Tomatoes three, kolokasi four, strawberries five. Twelve euros. |
+| Νίκος | Ορίστε, ένα εικοσάρικο. | Here, a twenty. |
+| Πανίκος | Τζιαι οχτώ ρέστα. Βάλλω σου τζιαι νάκκον μαϊντανό, κερασμένο. | And eight change. I'm adding some parsley too, on the house. |
+| Νίκος | Ευχαριστώ πολλά! Έσιεις μιαν σακούλλα πκιο μιάλη; | Thanks a lot! Do you have a bigger bag? |
+| Πανίκος | Έσιει, πάρε τούτη. Να μεν σου σκιστεί στη στράτα. | Yes, take this one. So it doesn't tear on the way. |
+| Νίκος | Να 'σαι καλά. | Thank you, take care. |
+| Πανίκος | Την άλλη βδομάδα σε περιμένω! Εννά έχω τζιαι κουμμάρκα. | See you next week! I'll have apricots too. |

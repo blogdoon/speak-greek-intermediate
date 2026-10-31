@@ -1,0 +1,35 @@
+# Μεζέ στην ταβέρνα — Meze at the Taverna
+
+| | Κυπριακά | English |
+| --- | --- | --- |
+| Σάββας | Καλησπέρα παιδιά! Πόσοι είστε; | Good evening, guys! How many of you are there? |
+| Γιώργος | Τέσσερις. Η Χρυστάλλα εννά αρκήσει νάκκον. | Four. Chrystalla will be a bit late. |
+| Σάββας | Ελάτε δαμαί, έσιει τραπέζι έξω στην αυλή. | Come this way, there's a table outside in the courtyard. |
+| Ελένη | Τέλεια, έσιει τζιαι δροσιά απόψε. | Perfect, it's cool tonight too. |
+| Σάββας | Ίντα να σας φέρω να πιείτε; | What can I bring you to drink? |
+| Γιώργος | Μια κανάτα κρασί κόκκινο τζιαι νερό. | A jug of red wine and water. |
+| Ελένη | Εμέναν μια λεμονάδα, εν πίνω απόψε. | A lemonade for me, I'm not drinking tonight. |
+| Σάββας | Για φαΐ; Μεζέ; | For food? Meze? |
+| Γιώργος | Ναι, μεζέ για τέσσερις. Νίκο, έφαες ποττέ ολόκληρο μεζέ; | Yes, meze for four. Nicos, have you ever eaten a full meze? |
+| Νίκος | Όι, ποττέ. Πόσα πιάτα έν; | No, never. How many dishes is it? |
+| Ελένη | Είκοσι, ίσως τζιαι παραπάνω! Να μεν φας πολλά στην αρχή. | Twenty, maybe even more! Don't eat too much at the start. |
+| Νίκος | Γιατί; | Why? |
+| Γιώργος | Γιατί ξεκινά με τες σαλάτες, το ταχίνι, το τζατζίκι, τον ταραμά. Μετά έρκουνται τα κουπέπια, τα λουκάνικα, το χαλλούμι, η λούντζα... Τζιαι στο τέλος τα κρέατα: σιεφταλιές, σουβλάκια τζιαι κλέφτικο. Αν φας ούλλη την πίττα τωρά, εννά σκάσεις! | Because it starts with the salads, tahini, tzatziki, taramas. Then come the stuffed vine leaves, sausages, halloumi, lountza... And at the end the meats: sheftalia, souvlaki and kleftiko. If you eat all the pitta now, you'll burst! |
+| Νίκος | Εντάξει, εννά προσέχω. | OK, I'll be careful. |
+| Χρυστάλλα | Καλησπέρα! Συγγνώμη που άρκησα. Είσιε κίνηση στον αυτοκινητόδρομο. | Good evening! Sorry I'm late. There was traffic on the motorway. |
+| Ελένη | Έλα, κάτσε. Ήρτες στην ώρα σου, μόλις έφεραν το χαλλούμι. | Come, sit. You're just in time, they've just brought the halloumi. |
+| Χρυστάλλα | Ωραία! Πεινώ σαν λύκος. | Great! I'm as hungry as a wolf. |
+| Νίκος | Σάββα, τούτη η σιεφταλιά έν πολλά νόστιμη. Ίντα έσιει μέσα; | Savvas, this sheftalia is really tasty. What's in it? |
+| Σάββας | Χοιρινό κιμά, κρεμμύδι, μαϊντανό, τυλιμένο στην πάνα. Η συνταγή έν της μάνας μου. | Minced pork, onion, parsley, wrapped in caul fat. The recipe is my mother's. |
+| Νίκος | Να της πεις μπράβο εκ μέρους μου. | Tell her well done from me. |
+| Σάββας | Εννά της το πω, εννά χαρεί. | I'll tell her, she'll be pleased. |
+| Γιώργος | Άτε, να πιούμεν. Στην υγειά μας! | Come on, let's drink. To our health! |
+| Ούλλοι | Εις υγείαν! | Cheers! |
+| Νίκος | Παιδιά, εν μπορώ να φάω άλλο. Εγέμωσα. | Guys, I can't eat any more. I'm full. |
+| Σάββας | Τζιαι το γλυκό; Έσιει γλυκό του κουταλιού τζιαι φρούτα, κερασμένα. | And dessert? There's spoon sweet and fruit, on the house. |
+| Νίκος | Μάνα μου! | Oh my goodness! |
+| Ελένη | Έτσι έν στην Κύπρο. Εν φεύκεις ποττέ πεινασμένος. | That's how it is in Cyprus. You never leave hungry. |
+| Νίκος | Τζιαι ο λογαριασμός; Τούτη τη φορά εν δικός μου. | And the bill? This time it's mine. |
+| Γιώργος | Όι ρε, πρώτη φορά που ήρτες μαζί μας. Είσαι καλεσμένος μας. | No way, it's your first time out with us. You're our guest. |
+| Νίκος | Τότε την άλλη φορά κερνώ εγώ, τζιαι εν θέλω κουβέντες! | Then next time I'm paying, and no arguments! |
+| Χρυστάλλα | Ακούσατε τον; Έμαθε τζιαι μιλά σαν Κυπραίος! | Did you hear him? He's learned to talk like a Cypriot! |
