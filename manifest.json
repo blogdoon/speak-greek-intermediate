@@ -1,0 +1,13 @@
+{
+  "name": "Κυπριακά — Speak Cypriot Greek",
+  "short_name": "Κυπριακά",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6efe4",
+  "theme_color": "#0f4c5c",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
