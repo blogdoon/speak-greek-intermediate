@@ -283,9 +283,168 @@ main {
   color: var(--color-muted);
 }
 
-.line.concealed:not(.revealed) .el {
+.line.concealed:not(.revealed) .el,
+.line.fade-hidden:not(.revealed) .el {
   filter: blur(7px);
   user-select: none;
+}
+
+.el-hint {
+  display: none;
+}
+
+.line.fade-hints:not(.revealed) .el {
+  display: none;
+}
+
+.line.fade-hints:not(.revealed) .el-hint {
+  display: block;
+  margin: 0;
+  font-family: var(--font-greek);
+  font-size: var(--text-greek);
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  color: var(--color-sea);
+}
+
+.fade-btn {
+  margin: -0.5rem 0 1.25rem;
+  min-height: 36px;
+  padding: 0.3rem 0.9rem;
+  border: 1px dashed var(--color-sea);
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-sea);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.line-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.line-btn {
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0.2rem 0.75rem;
+  border: 1px solid rgb(15 76 92 / 0.25);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-sea);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: background var(--duration-fast);
+}
+
+.line-btn:active {
+  background: var(--color-sea-soft);
+}
+
+.line-btn.star {
+  color: var(--color-muted);
+}
+
+.line-btn.star[aria-pressed="true"] {
+  border-color: var(--color-clay);
+  background: var(--color-clay-soft);
+  color: var(--color-clay);
+}
+
+.graded-note {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-olive);
+}
+
+.line.graded {
+  opacity: 0.6;
+}
+
+.result {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.3rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  background: var(--color-sand);
+}
+
+.result strong {
+  font-size: 1.1rem;
+}
+
+.result.pass {
+  border-left: 4px solid var(--color-olive);
+}
+.result.pass strong {
+  color: var(--color-olive);
+}
+
+.result.fail,
+.result.error {
+  border-left: 4px solid var(--color-clay);
+}
+.result.fail strong {
+  color: var(--color-clay);
+}
+
+.result.listening {
+  border-left: 4px solid var(--color-sea);
+  color: var(--color-sea);
+}
+
+.result .words {
+  font-family: var(--font-greek);
+  font-size: var(--text-base);
+}
+
+.result .miss {
+  color: var(--color-clay);
+  text-decoration: underline wavy;
+  text-underline-offset: 3px;
+}
+
+.result small {
+  color: var(--color-muted);
+}
+
+/* ---------- Review card ---------- */
+
+.review-card {
+  display: grid;
+  gap: 0.2rem;
+  margin-bottom: 2rem;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-lg);
+  background: var(--color-clay);
+  color: var(--color-paper);
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgb(200 85 61 / 0.3);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.review-card:active {
+  transform: scale(0.98);
+}
+
+.review-card.idle {
+  background: var(--color-paper);
+  color: var(--color-muted);
+  box-shadow: none;
+}
+
+.review-title {
+  font-family: var(--font-greek);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.review-meta {
+  font-size: var(--text-sm);
 }
 
 /* ---------- Player ---------- */

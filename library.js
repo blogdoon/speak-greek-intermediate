@@ -55,6 +55,7 @@ self.APP_SHELL = [
   "index.html",
   "style.css",
   "app.js",
+  "practice.js",
   "library.js",
   "manifest.json",
   "icon.svg",

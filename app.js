@@ -2,7 +2,12 @@ const $ = (selector) => document.querySelector(selector);
 
 const SETTINGS_KEY = "skg-settings";
 const DONE_KEY = "skg-done";
+const REVIEW_KEY = "skg-review";
+const FADE_KEY = "skg-fade";
+const REVIEW_ID = "review";
 const NICOS = "Νίκος";
+const FADE_LABELS = ["Κείμενο: Όλο", "Κείμενο: Αρχικά", "Κείμενο: Κρυφό"];
+const MAX_FADE = FADE_LABELS.length - 1;
 const LINE_GAP_MS = 600;
 const MIN_TURN_MS = 1200;
 const MS_PER_CHAR = 70;
@@ -31,7 +36,11 @@ const settings = {
   ...readJson(SETTINGS_KEY, {}),
 };
 const done = new Set(readJson(DONE_KEY, []));
+const Recognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
 
+let reviews = readJson(REVIEW_KEY, {});
+let fade = readJson(FADE_KEY, {});
+let listening = null;
 let lessons = [];
 let current = null;
 let index = 0;
@@ -119,7 +128,7 @@ async function loadLibrary() {
       id: `${file}#${i}`,
       group: group.id,
       title: s.title,
-      lines: s.lines,
+      lines: s.lines.map((line) => ({ ...line, key: `${file}#${i}::${line.el}` })),
     })),
   );
 }
@@ -201,6 +210,7 @@ async function play() {
 function stop() {
   runId += 1;
   speechSynthesis.cancel();
+  stopListening();
   setPlaying(false);
 }
 
@@ -284,11 +294,15 @@ function lineItem(line, i) {
   });
   if (line.speaker)
     item.append(h("span", { className: "speaker", textContent: line.speaker }));
-  item.append(h("span", { className: "el", lang: "el", textContent: line.el }));
+  item.append(
+    h("span", { className: "el", lang: "el", textContent: line.el }),
+    h("span", { className: "el-hint", lang: "el", textContent: hintText(line.el) }),
+  );
   if (line.en)
     item.append(
       h("span", { className: "en", lang: "en", textContent: line.en }),
     );
+  item.append(lineActions(line, item), h("div", { className: "result", hidden: true }));
   item.addEventListener("click", () => {
     stop();
     index = i;
@@ -297,11 +311,52 @@ function lineItem(line, i) {
   return item;
 }
 
+function actionButton(text, label, onClick) {
+  const button = h("button", { type: "button", className: "line-btn", textContent: text, title: label });
+  button.setAttribute("aria-label", label);
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+function lineActions(line, item) {
+  const bar = h("div", { className: "line-actions" });
+  bar.addEventListener("click", (e) => e.stopPropagation());
+  if (Recognition)
+    bar.append(actionButton("Πε το", "Say it and check pronunciation", () => checkLine(line, item)));
+  if (current.id === REVIEW_ID) {
+    bar.append(
+      actionButton("Ξανά", "Still hard: review again tomorrow", () => gradeReview(line, item, false)),
+      actionButton("Το ξέρω", "I know it: review later", () => gradeReview(line, item, true)),
+    );
+  } else {
+    const star = actionButton("★", "Add to daily review", () => toggleReview(line, star));
+    star.classList.add("star");
+    star.setAttribute("aria-pressed", String(line.key in reviews));
+    bar.append(star);
+  }
+  return bar;
+}
+
+function fadeLevel() {
+  return current.id === REVIEW_ID ? 0 : (fade[current.id] ?? 0);
+}
+
+function setFade(id, level) {
+  fade = { ...fade, [id]: level };
+  localStorage.setItem(FADE_KEY, JSON.stringify(fade));
+}
+
 function applyConcealment() {
+  const level = settings.showText ? 0 : fadeLevel();
   [...$("#lines").children].forEach((item, i) => {
-    item.classList.toggle("concealed", isConcealed(current.lines[i]));
+    const concealed = isConcealed(current.lines[i]);
+    item.classList.toggle("concealed", concealed);
+    item.classList.toggle("fade-hints", !concealed && level === 1);
+    item.classList.toggle("fade-hidden", !concealed && level === 2);
     item.classList.remove("revealed");
   });
+  $("#fade").textContent = FADE_LABELS[fadeLevel()];
+  $("#fade").hidden = current.id === REVIEW_ID;
 }
 
 function renderLesson(lesson) {
@@ -311,6 +366,124 @@ function renderLesson(lesson) {
   $("#lines").replaceChildren(...lesson.lines.map(lineItem));
   renderModes();
   applyConcealment();
+}
+
+/* ---------- Pronunciation check ---------- */
+
+function stopListening() {
+  if (!listening) return;
+  const { rec, item } = listening;
+  listening = null;
+  rec.onend = rec.onerror = rec.onresult = null;
+  rec.abort();
+  item.querySelector(".result").hidden = true;
+}
+
+function showResultMessage(item, text, kind) {
+  const box = item.querySelector(".result");
+  box.hidden = false;
+  box.className = `result ${kind}`;
+  box.textContent = text;
+}
+
+function showScore(item, result) {
+  const box = item.querySelector(".result");
+  box.hidden = false;
+  box.className = `result ${result.score >= PASS_SCORE ? "pass" : "fail"}`;
+  const words = h("span", { className: "words", lang: "el" });
+  for (const word of result.words)
+    words.append(h("span", { className: word.ok ? "" : "miss", textContent: word.text }), " ");
+  box.replaceChildren(
+    h("strong", { textContent: `${Math.round(result.score * 100)}%` }),
+    words,
+    h("small", { lang: "el", textContent: `Άκουσα: ${result.heard}` }),
+  );
+}
+
+function recognitionErrorText(error) {
+  if (error === "not-allowed" || error === "service-not-allowed")
+    return "Allow microphone access to check your pronunciation.";
+  if (error === "network") return "The pronunciation check needs an internet connection.";
+  return "Δεν άκουσα καλά. Try again.";
+}
+
+function checkLine(line, item) {
+  stop();
+  const rec = new Recognition();
+  rec.lang = "el-GR";
+  rec.maxAlternatives = 5;
+  rec.interimResults = false;
+  listening = { rec, item };
+  let finished = false;
+  showResultMessage(item, "Ακούω… πε τη φράση.", "listening");
+  rec.onresult = (e) => {
+    finished = true;
+    const result = bestAttempt(line.el, [...e.results[0]].map((a) => a.transcript));
+    showScore(item, result);
+    if (result.score < PASS_SCORE && current?.id !== REVIEW_ID) {
+      addReview(line);
+      item.querySelector(".star")?.setAttribute("aria-pressed", "true");
+    }
+  };
+  rec.onerror = (e) => {
+    finished = true;
+    showResultMessage(item, recognitionErrorText(e.error), "error");
+  };
+  rec.onend = () => {
+    listening = null;
+    if (!finished) showResultMessage(item, "Δεν άκουσα τίποτε. Try again.", "error");
+  };
+  rec.start();
+}
+
+/* ---------- Daily review ---------- */
+
+function setReview(key, entry) {
+  const { [key]: _removed, ...rest } = reviews;
+  reviews = entry ? { ...rest, [key]: entry } : rest;
+  localStorage.setItem(REVIEW_KEY, JSON.stringify(reviews));
+}
+
+function addReview(line) {
+  if (line.key in reviews) return;
+  const { speaker, el, en } = line;
+  setReview(line.key, { key: line.key, line: { speaker, el, en }, step: 0, due: dayNumber() });
+}
+
+function toggleReview(line, button) {
+  if (line.key in reviews) setReview(line.key, null);
+  else addReview(line);
+  button.setAttribute("aria-pressed", String(line.key in reviews));
+}
+
+function gradeReview(line, item, known) {
+  const entry = reviews[line.key];
+  if (!entry) return;
+  const today = dayNumber();
+  const next = known ? scheduleKnown(entry, today) : scheduleAgain(entry, today);
+  setReview(line.key, next);
+  const days = next ? next.due - today : 0;
+  const note = !next ? "Το έμαθες!" : days === 1 ? "Ξανά αύριο" : `Ξανά σε ${days} μέρες`;
+  item.classList.add("graded");
+  item.querySelector(".line-actions").replaceChildren(h("span", { className: "graded-note", textContent: note }));
+}
+
+function dueReviews() {
+  const today = dayNumber();
+  return Object.values(reviews)
+    .filter((entry) => entry.due <= today)
+    .sort((a, b) => a.due - b.due);
+}
+
+function reviewLesson() {
+  const due = dueReviews();
+  if (!due.length) return null;
+  return {
+    id: REVIEW_ID,
+    group: REVIEW_ID,
+    title: "Επανάληψη",
+    lines: due.map((entry) => ({ ...entry.line, key: entry.key })),
+  };
 }
 
 function setMode(mode) {
@@ -336,8 +509,11 @@ function reveal(i) {
 }
 
 function markDone(id) {
+  if (id === REVIEW_ID) return;
   done.add(id);
   localStorage.setItem(DONE_KEY, JSON.stringify([...done]));
+  setFade(id, Math.min((fade[id] ?? 0) + 1, MAX_FADE));
+  applyConcealment();
 }
 
 /* ---------- Home view ---------- */
@@ -359,9 +535,27 @@ function lessonLink(lesson) {
   return item;
 }
 
+function reviewCard() {
+  const queued = Object.keys(reviews).length;
+  if (!queued) return null;
+  const due = dueReviews().length;
+  const card = h(due ? "a" : "div", { className: due ? "review-card" : "review-card idle" });
+  if (due) card.href = `#lesson=${REVIEW_ID}`;
+  card.append(
+    h("span", { className: "review-title", textContent: "Επανάληψη σήμερα" }),
+    h("span", {
+      className: "review-meta",
+      textContent: due ? `${due} to review` : `Nothing due today · ${queued} in queue`,
+    }),
+  );
+  return card;
+}
+
 function renderHome() {
   $("#page-title").textContent = "Κυπριακά";
+  const card = reviewCard();
   $("#home").replaceChildren(
+    ...(card ? [card] : []),
     ...LIBRARY.map((group) => {
       const section = h("section", { className: `group group-${group.id}` });
       const list = h("ul", { className: "lesson-list" });
@@ -381,7 +575,8 @@ function renderHome() {
 function route() {
   stop();
   const id = new URLSearchParams(location.hash.slice(1)).get("lesson");
-  const lesson = lessons.find((l) => l.id === id);
+  const lesson =
+    id === REVIEW_ID ? reviewLesson() : lessons.find((l) => l.id === id);
   for (const selector of ["#lesson", "#player", "#back"])
     $(selector).hidden = !lesson;
   $("#home").hidden = Boolean(lesson);
@@ -412,6 +607,11 @@ function bindControls() {
   $("#play").addEventListener("click", () => (isPlaying ? stop() : play()));
   $("#prev").addEventListener("click", () => jump(-1));
   $("#next").addEventListener("click", () => jump(1));
+  $("#fade").addEventListener("click", () => {
+    stop();
+    setFade(current.id, (fadeLevel() + 1) % FADE_LABELS.length);
+    applyConcealment();
+  });
   $("#rate").addEventListener("input", (e) => {
     settings.rate = Number(e.target.value);
     saveSettings();
