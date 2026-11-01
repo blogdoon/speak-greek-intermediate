@@ -1,6 +1,6 @@
 importScripts("library.js");
 
-const CACHE = "skg-v3";
+const CACHE = "skg-v4";
 const PRECACHE = [
   ...self.APP_SHELL,
   ...self.LIBRARY.flatMap((group) => group.files),

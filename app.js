@@ -12,7 +12,8 @@ const MAX_FADE = FADE_LABELS.length - 1;
 const LINE_GAP_MS = 600;
 const SHADOW_GAP_MS = 250;
 const COMPARE_GAP_MS = 400;
-const CHECK_MAX_MS = 8000;
+const CHECK_MIN_MS = 30000;
+const CHECK_MAX_MS = 120000;
 const RECORD_MAX_MS = 15000;
 const MIN_TURN_MS = 1200;
 const MS_PER_CHAR = 70;
@@ -223,7 +224,10 @@ async function yourTurn(line, id) {
   const ms = turnMs(line.el);
   if (activeMode() !== "role" || !Recognition) return wait(ms);
   showResultMessage(item, "Είναι η σειρά σου…", "listening");
-  const [outcome] = await Promise.all([recognise(ms * 2), wait(ms)]);
+  const [outcome] = await Promise.all([
+    recognise(listeningMs(line.el)),
+    wait(ms),
+  ]);
   if (id === runId) showOutcome(line, item, outcome);
   else item.querySelector(".result").hidden = true;
 }
@@ -498,28 +502,55 @@ function stopListening() {
   listening = null;
 }
 
+function listeningMs(text) {
+  return Math.min(CHECK_MAX_MS, Math.max(CHECK_MIN_MS, turnMs(text) * 2));
+}
+
 // Resolves with { heard: [...] } or { error }; never rejects.
 function recognise(maxMs) {
   return new Promise((resolve) => {
     const rec = new Recognition();
     rec.lang = "el-GR";
     rec.maxAlternatives = 5;
-    rec.interimResults = false;
+    rec.continuous = true;
+    rec.interimResults = true;
     let outcome = { error: "no-speech" };
+    let silenceTimer;
+    const silenceMs = 3000;
     const timer = setTimeout(() => rec.stop(), maxMs);
     rec.onresult = (e) => {
-      outcome = { heard: [...e.results[0]].map((a) => a.transcript) };
+      clearTimeout(silenceTimer);
+      const finals = Array.from(e.results).filter((result) => result.isFinal);
+      if (finals.length) {
+        const alternatives = Math.max(...finals.map((result) => result.length));
+        outcome = {
+          heard: Array.from({ length: alternatives }, (_, alternative) =>
+            finals
+              .map((result) =>
+                (result[alternative] ?? result[0]).transcript.trim(),
+              )
+              .join(" "),
+          ),
+        };
+      }
+      silenceTimer = setTimeout(() => rec.stop(), silenceMs);
     };
     rec.onerror = (e) => {
       outcome = { error: e.error };
     };
     rec.onend = () => {
       clearTimeout(timer);
+      clearTimeout(silenceTimer);
       if (listening === rec) listening = null;
       resolve(outcome);
     };
     listening = rec;
-    rec.start();
+    try {
+      rec.start();
+    } catch {
+      outcome = { error: "not-allowed" };
+      rec.onend();
+    }
   });
 }
 
@@ -573,7 +604,7 @@ async function checkLine(line, item) {
   stop();
   const id = runId;
   showResultMessage(item, "Ακούω… πε τη φράση.", "listening");
-  const outcome = await recognise(CHECK_MAX_MS);
+  const outcome = await recognise(listeningMs(line.el));
   if (id !== runId) {
     item.querySelector(".result").hidden = true;
     return;
