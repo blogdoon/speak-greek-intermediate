@@ -12,8 +12,14 @@ const MAX_FADE = FADE_LABELS.length - 1;
 const LINE_GAP_MS = 600;
 const SHADOW_GAP_MS = 250;
 const COMPARE_GAP_MS = 400;
-const CHECK_MIN_MS = 30000;
 const CHECK_MAX_MS = 120000;
+const FATAL_RECOGNITION_ERRORS = new Set([
+  "not-allowed",
+  "service-not-allowed",
+  "network",
+  "audio-capture",
+  "language-not-supported",
+]);
 const RECORD_MAX_MS = 15000;
 const MIN_TURN_MS = 1200;
 const MS_PER_CHAR = 70;
@@ -221,13 +227,13 @@ function isYourLine(line) {
 
 async function yourTurn(line, id) {
   const item = $("#lines").children[index];
-  const ms = turnMs(line.el);
-  if (activeMode() !== "role" || !Recognition) return wait(ms);
-  showResultMessage(item, "Είναι η σειρά σου…", "listening");
-  const [outcome] = await Promise.all([
-    recognise(listeningMs(line.el)),
-    wait(ms),
-  ]);
+  if (activeMode() !== "role" || !Recognition) return wait(turnMs(line.el));
+  showResultMessage(
+    item,
+    "Η σειρά σου. Say your line, then tap Τέλος.",
+    "listening",
+  );
+  const outcome = await listenAt(item);
   if (id === runId) showOutcome(line, item, outcome);
   else item.querySelector(".result").hidden = true;
 }
@@ -424,12 +430,13 @@ function actionButton(text, label, onClick) {
 function lineActions(line, item) {
   const bar = h("div", { className: "line-actions" });
   bar.addEventListener("click", (e) => e.stopPropagation());
-  if (Recognition)
-    bar.append(
-      actionButton("Πε το", "Say it and check pronunciation", () =>
-        checkLine(line, item),
-      ),
+  if (Recognition) {
+    const say = actionButton("Πε το", "Start, then tap again when you finish", () =>
+      checkLine(line, item),
     );
+    say.classList.add("say");
+    bar.append(say);
+  }
   if (canRecord) {
     const compareBtn = actionButton(
       "Σύγκρινε",
@@ -498,60 +505,71 @@ function renderLesson(lesson) {
 /* ---------- Pronunciation check ---------- */
 
 function stopListening() {
-  listening?.abort();
+  if (!listening) return;
+  listening.error = "aborted";
+  listening.rec.abort();
   listening = null;
 }
 
-function listeningMs(text) {
-  return Math.min(CHECK_MAX_MS, Math.max(CHECK_MIN_MS, turnMs(text) * 2));
+function finishListening(session = listening) {
+  if (!session) return;
+  session.finishing = true;
+  session.rec.stop();
 }
 
-// Resolves with { heard: [...] } or { error }; never rejects.
-function recognise(maxMs) {
+// Browsers end recognition after short pauses, so restart until the user taps Τέλος.
+function recognise(item) {
   return new Promise((resolve) => {
     const rec = new Recognition();
     rec.lang = "el-GR";
     rec.maxAlternatives = 5;
     rec.continuous = true;
-    rec.interimResults = true;
-    let outcome = { error: "no-speech" };
-    let silenceTimer;
-    const silenceMs = 3000;
-    const timer = setTimeout(() => rec.stop(), maxMs);
+    rec.interimResults = false;
+    const session = { rec, item, finishing: false, error: null };
+    let heard = [];
+    let latest = [];
+    const timer = setTimeout(() => finishListening(session), CHECK_MAX_MS);
     rec.onresult = (e) => {
-      clearTimeout(silenceTimer);
-      const finals = Array.from(e.results).filter((result) => result.isFinal);
-      if (finals.length) {
-        const alternatives = Math.max(...finals.map((result) => result.length));
-        outcome = {
-          heard: Array.from({ length: alternatives }, (_, alternative) =>
-            finals
-              .map((result) =>
-                (result[alternative] ?? result[0]).transcript.trim(),
-              )
-              .join(" "),
-          ),
-        };
-      }
-      silenceTimer = setTimeout(() => rec.stop(), silenceMs);
+      latest = finalTranscripts(e.results);
     };
     rec.onerror = (e) => {
-      outcome = { error: e.error };
+      if (e.error === "aborted" || FATAL_RECOGNITION_ERRORS.has(e.error))
+        session.error = e.error;
     };
     rec.onend = () => {
+      heard = joinAlternatives(heard, latest);
+      latest = [];
+      if (!session.finishing && !session.error) {
+        try {
+          rec.start();
+          return;
+        } catch {
+          // Could not restart: score what was heard so far.
+        }
+      }
       clearTimeout(timer);
-      clearTimeout(silenceTimer);
-      if (listening === rec) listening = null;
-      resolve(outcome);
+      if (listening === session) listening = null;
+      if (session.error) resolve({ error: session.error });
+      else resolve(heard.length ? { heard } : { error: "no-speech" });
     };
-    listening = rec;
+    listening = session;
     try {
       rec.start();
     } catch {
-      outcome = { error: "not-allowed" };
+      session.finishing = true;
       rec.onend();
     }
   });
+}
+
+async function listenAt(item) {
+  const button = item.querySelector(".say");
+  button?.setAttribute("aria-pressed", "true");
+  if (button) button.textContent = "Τέλος";
+  const outcome = await recognise(item);
+  button?.setAttribute("aria-pressed", "false");
+  if (button) button.textContent = "Πε το";
+  return outcome;
 }
 
 function showResultMessage(item, text, kind) {
@@ -601,10 +619,18 @@ function showOutcome(line, item, outcome) {
 }
 
 async function checkLine(line, item) {
+  if (listening?.item === item) {
+    finishListening();
+    return;
+  }
   stop();
   const id = runId;
-  showResultMessage(item, "Ακούω… πε τη φράση.", "listening");
-  const outcome = await recognise(listeningMs(line.el));
+  showResultMessage(
+    item,
+    "Ακούω… Say the line, then tap Τέλος.",
+    "listening",
+  );
+  const outcome = await listenAt(item);
   if (id !== runId) {
     item.querySelector(".result").hidden = true;
     return;

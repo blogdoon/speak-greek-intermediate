@@ -99,6 +99,26 @@ function hintText(text) {
   return text.replace(/\p{L}+/gu, (w) => w[0] + "_".repeat(w.length - 1));
 }
 
+// One string per recognition alternative, joining every final segment.
+function finalTranscripts(results) {
+  const finals = Array.from(results).filter((r) => r.isFinal);
+  if (!finals.length) return [];
+  const count = Math.max(...finals.map((r) => r.length));
+  return Array.from({ length: count }, (_, i) =>
+    finals.map((r) => (r[i] ?? r[0]).transcript.trim()).join(" "),
+  );
+}
+
+function joinAlternatives(before, after) {
+  if (!after.length) return before;
+  if (!before.length) return after;
+  const count = Math.max(before.length, after.length);
+  return Array.from(
+    { length: count },
+    (_, i) => `${before[i] ?? before[0]} ${after[i] ?? after[0]}`,
+  );
+}
+
 function dayNumber(now = Date.now()) {
   const offsetMs = new Date(now).getTimezoneOffset() * 60_000;
   return Math.floor((now - offsetMs) / DAY_MS);
@@ -141,6 +161,8 @@ if (typeof module !== "undefined") {
     scoreAttempt,
     bestAttempt,
     hintText,
+    finalTranscripts,
+    joinAlternatives,
     dayNumber,
     scheduleAgain,
     scheduleKnown,

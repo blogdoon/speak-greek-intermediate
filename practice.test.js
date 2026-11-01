@@ -8,7 +8,10 @@ function listenerHarness() {
   const timers = new Map();
   let nextTimer = 0;
   class Recognition {
-    start() {}
+    starts = 0;
+    start() {
+      this.starts += 1;
+    }
     stop() {
       this.stopped = true;
     }
@@ -19,9 +22,10 @@ function listenerHarness() {
   const context = vm.createContext({
     Recognition,
     listening: null,
-    CHECK_MIN_MS: 30000,
     CHECK_MAX_MS: 120000,
-    turnMs: (text) => text.length * 100,
+    FATAL_RECOGNITION_ERRORS: new Set(["not-allowed"]),
+    finalTranscripts: p.finalTranscripts,
+    joinAlternatives: p.joinAlternatives,
     setTimeout(callback, ms) {
       timers.set(++nextTimer, { callback, ms });
       return nextTimer;
@@ -34,92 +38,88 @@ function listenerHarness() {
   vm.runInContext(
     source.slice(
       source.indexOf("function stopListening()"),
-      source.indexOf("function showResultMessage("),
+      source.indexOf("async function listenAt("),
     ),
     context,
   );
   return { context, timers };
 }
 
-test("listener keeps multiple final segments and waits through ongoing speech", async () => {
+const finalSegment = (...alternatives) =>
+  Object.assign(
+    alternatives.map((transcript) => ({ transcript })),
+    { isFinal: true },
+  );
+
+test("listening keeps going after the browser stops, until the user finishes", async () => {
   const { context, timers } = listenerHarness();
-  const attempt = context.recognise(30000);
-  const rec = context.listening;
+  const attempt = context.recognise("item");
+  const session = context.listening;
+  const { rec } = session;
   assert.equal(rec.continuous, true);
-  assert.equal(rec.interimResults, true);
-  const segment = (text, isFinal) =>
-    Object.assign([{ transcript: text }], { isFinal });
-  rec.onresult({ results: [segment("first phrase", true)] });
-  const firstSilenceTimer = [...timers.keys()].find(
-    (timer) => timers.get(timer).ms === 3000,
-  );
-  rec.onresult({
-    results: [segment("first phrase", true), segment("more words", false)],
-  });
-  assert.equal(timers.has(firstSilenceTimer), false);
-  assert.equal(
-    [...timers.values()].some(({ ms }) => ms === 3000),
-    true,
-  );
-  assert.equal(rec.stopped, undefined);
-  rec.onresult({
-    results: [segment("first phrase", true), segment("more words", true)],
-  });
-  rec.onresult({
-    results: [segment("first phrase", true), segment("more words", true)],
-  });
-  const silence = [...timers.values()].find(({ ms }) => ms === 3000);
-  assert.ok(silence);
-  silence.callback();
+  rec.onresult({ results: [finalSegment("first part")] });
+  rec.onerror({ error: "no-speech" });
+  rec.onend();
+  assert.equal(rec.starts, 2);
+  assert.equal(context.listening, session);
+  rec.onresult({ results: [finalSegment("second part")] });
+  context.finishListening();
   assert.equal(rec.stopped, true);
   rec.onend();
-  assert.equal((await attempt).heard[0], "first phrase more words");
+  assert.equal(rec.starts, 2);
+  assert.deepEqual(Array.from((await attempt).heard), [
+    "first part second part",
+  ]);
+  assert.equal(context.listening, null);
   assert.equal(timers.size, 0);
 });
 
-test("listener cancellation clears timers and does not clear a newer listener", async () => {
+test("listening stops on a fatal error or after the safety limit", async () => {
   const { context, timers } = listenerHarness();
-  const attempt = context.recognise(30000);
-  const rec = context.listening;
+  const denied = context.recognise("a");
+  context.listening.rec.onerror({ error: "not-allowed" });
+  context.listening.rec.onend();
+  assert.equal((await denied).error, "not-allowed");
+
+  const long = context.recognise("b");
+  const { rec } = context.listening;
+  [...timers.values()].find(({ ms }) => ms === 120000).callback();
+  assert.equal(rec.stopped, true);
+  rec.onend();
+  assert.equal((await long).error, "no-speech");
+  assert.equal(timers.size, 0);
+});
+
+test("cancelling does not clear a newer listener", async () => {
+  const { context, timers } = listenerHarness();
+  const attempt = context.recognise("a");
+  const { rec } = context.listening;
   context.stopListening();
   assert.equal(rec.aborted, true);
-  const newer = context.recognise(30000);
+  const newer = context.recognise("b");
   const active = context.listening;
-  rec.onerror({ error: "aborted" });
   rec.onend();
   assert.equal((await attempt).error, "aborted");
   assert.equal(context.listening, active);
-  active.onend();
+  context.finishListening();
+  active.rec.onend();
   await newer;
   assert.equal(timers.size, 0);
 });
 
-test("listening budget grows with sentence length and stays bounded", () => {
-  const { context } = listenerHarness();
-  assert.equal(context.listeningMs("short"), 30000);
-  assert.equal(context.listeningMs("word ".repeat(50)), 50000);
-  assert.equal(context.listeningMs("word ".repeat(200)), 120000);
+test("finalTranscripts joins final segments per alternative and skips interim", () => {
+  const interim = Object.assign([{ transcript: "maybe" }], { isFinal: false });
+  assert.deepEqual(
+    p.finalTranscripts([finalSegment("a", "x"), finalSegment("b"), interim]),
+    ["a b", "x b"],
+  );
+  assert.deepEqual(p.finalTranscripts([interim]), []);
 });
 
-test("listener deadline accepts the last result and preserves repeated words", async () => {
-  const { context, timers } = listenerHarness();
-  const attempt = context.recognise(50000);
-  const rec = context.listening;
-  const deadline = [...timers.values()].find(({ ms }) => ms === 50000);
-  assert.ok(deadline);
-  deadline.callback();
-  assert.equal(rec.stopped, true);
-  const phrase = Object.assign(
-    [{ transcript: "same words" }, { transcript: "alternate words" }],
-    { isFinal: true },
-  );
-  rec.onresult({ results: [phrase, phrase] });
-  rec.onend();
-  assert.deepEqual(Array.from((await attempt).heard), [
-    "same words same words",
-    "alternate words alternate words",
-  ]);
-  assert.equal(timers.size, 0);
+test("joinAlternatives appends later speech to earlier speech", () => {
+  assert.deepEqual(p.joinAlternatives([], ["b"]), ["b"]);
+  assert.deepEqual(p.joinAlternatives(["a", "x"], []), ["a", "x"]);
+  assert.deepEqual(p.joinAlternatives(["a", "x"], ["b"]), ["a b", "x b"]);
 });
 
 test("normalizeWord strips accents, punctuation and final sigma", () => {
